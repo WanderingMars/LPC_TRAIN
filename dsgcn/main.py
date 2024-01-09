@@ -6,6 +6,13 @@ import argparse
 import torch.distributed as dist
 import torch.multiprocessing as mp
 from mmcv import Config
+#*添加搜索路径
+def add_path(path):
+    if path not in sys.path:
+        sys.path.insert(0, path)
+lib_path = '/workspace/LPC_TRAIN'
+add_path(lib_path) #可以导入lib_path下的模块了
+#*=================================================
 from utils import (create_logger, set_random_seed,
                     rm_suffix, mkdir_if_no_exists)
 
@@ -18,7 +25,7 @@ def parse_args():
     parser.add_argument('--config', help='train config file path')
     parser.add_argument('--seed', type=int, default=42, help='random seed')
     parser.add_argument('--stage', choices=['det', 'seg', 'mall'], default='det')
-    parser.add_argument('--phase', choices=['test', 'train'], default='test')
+    parser.add_argument('--phase', choices=['test', 'train'], default='train')
     parser.add_argument('--work_dir', help='the dir to save logs and models')
     parser.add_argument('--load_from1', default=None, help='the checkpoint file to load from')
     parser.add_argument('--load_from2', default=None, help='the checkpoint file to load from')
@@ -42,6 +49,7 @@ def _init_dist_pytorch(backend, **kwargs):
         dist.init_process_group(backend=backend, **kwargs)
 
 def main():
+    #*配置
     args = parse_args()
     cfg = Config.fromfile(args.config)
     # set cuda
@@ -77,7 +85,8 @@ def main():
     if args.seed is not None:
         logger.info('Set random seed to {}'.format(args.seed))
         set_random_seed(args.seed)
-
+    #*======================================================================
+    #*模型构建
     model = [build_model(cfg.model1['type'], **cfg.model1['kwargs']), \
             build_model(cfg.model2['type'], **cfg.model2['kwargs']), \
             build_model(cfg.model3['type'], **cfg.model3['kwargs'])]
@@ -95,7 +104,7 @@ def main():
     handler = build_handler(args.phase, args.stage)
 
     handler(model, cfg, logger)
-
+    #*======================================================================
 
 if __name__ == '__main__':
     main()

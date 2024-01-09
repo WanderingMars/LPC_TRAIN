@@ -24,9 +24,9 @@ model3:
 
 
 distributed: False 
-gpus: 8
-workers_per_gpu: 8
-batch_size_per_gpu: 2048
+gpus: 1
+workers_per_gpu: 4
+batch_size_per_gpu: 512
 iter_size: 1
 
 total_iterations: 100
@@ -66,8 +66,12 @@ workflow2:
 
 train_data:
     proposal_path:
-        - /ssd/pdai/MOT_research/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_traindata/
+        # - /ssd/pdai/MOT_research/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_traindata/
+        # - /workspace/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_traindata/
+        - /workspace/LPC_TRAIN/dataset/
 
 test_data:
     proposal_path:
-        - /ssd/pdai/MOT_research/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_testdata/
+        # - /ssd/pdai/MOT_research/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_testdata/
+        # - /workspace/LPC_MOT/dataset/MOT17/results_reid_with_traindata/lpc_traindata/
+        - /workspace/LPC_TRAIN/dataset/
